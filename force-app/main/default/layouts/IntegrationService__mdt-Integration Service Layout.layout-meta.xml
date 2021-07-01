@@ -20,7 +20,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Http_Method__c</field>
+                <field>HttpMethod__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
