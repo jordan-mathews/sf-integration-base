@@ -4,7 +4,6 @@ public class IntegrationController {
   private HttpResponse response;
   private String requestEndpoint;
   private String baseEndpoint;
-  private String serviceEndpoint;
   private String requestMethod;
 
 
@@ -22,18 +21,22 @@ public class IntegrationController {
       setRequestEndpoint(config.BaseEndpoint__c, service.Path__c);
     }
 
+    setRequestMethod(service.HttpMethod__c);
+
   }
 
   public void sendRequest(){
+    this.request.setEndpoint(requestEndpoint);
+    this.request.setMethod(requestMethod);
     this.response = new Http().send(request);
   }
 
   private IntegrationConfiguration__mdt getIntegrationConfig(String configName){
-    return [SELECT Id, DeveloperName, BaseEndpoint__c FROM IntegrationConfiguration__mdt WHERE DeveloperName = :configName LIMIT 1];
+    return [SELECT Id, DeveloperName, NamedCredential__c, BaseEndpoint__c FROM IntegrationConfiguration__mdt WHERE DeveloperName = :configName LIMIT 1];
   }
 
   private IntegrationService__mdt getIntegrationService(String configName, String serviceName){
-    return [SELECT Id, DeveloperName, Path__c,IntegrationConfiguration__c FROM IntegrationService__mdt WHERE DeveloperName = :serviceName AND IntegrationConfiguration__c = :configName LIMIT 1];
+    return [SELECT Id, DeveloperName, HttpMethod__c, Path__c, IntegrationConfiguration__c FROM IntegrationService__mdt WHERE DeveloperName = :serviceName LIMIT 1];
   }
 
   public HttpRequest getRequest(){
@@ -48,16 +51,12 @@ public class IntegrationController {
     return this.baseEndpoint;
   }
 
-  public String getBaseEndpoint(){
-    return this.baseEndpoint;
-  }
-
-  public String getServiceEndpoint(){
-    return this.serviceEndpoint;
-  }
-
   public String getRequestMethod(){
     return this.requestMethod;
+  }
+
+  public String getResponseBody(){
+    return this.request.getBody();
   }
 
   public void setRequest(HttpRequest request){
@@ -68,13 +67,6 @@ public class IntegrationController {
     this.requestEndpoint = baseEndpoint + serviceEndpoint;
   }
 
-  public void setBaseEndpoint(String baseEndpoint){
-    this.baseEndpoint = baseEndpoint;
-  }
-
-  public void setServiceEndpoint(String serviceEndpoint){
-    this.serviceEndpoint = serviceEndpoint;
-  }
 
   public void setRequestMethod(String requestMethod){
     this.requestMethod = requestMethod;
@@ -82,6 +74,10 @@ public class IntegrationController {
 
   public void setNamedCredential(String NamedCredential, String serviceEndpoint){
     this.requestEndpoint = ('callout:'+NamedCredential+serviceEndpoint);
+  }
+
+  public void setUrlParams(String params){
+    this.requestEndpoint = requestEndpoint+params;
   }
 
 }
