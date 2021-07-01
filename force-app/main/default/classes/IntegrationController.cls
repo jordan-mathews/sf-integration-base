@@ -2,6 +2,7 @@ public class IntegrationController {
 
   private HttpRequest request;
   private HttpResponse response;
+  private String requestEndpoint;
   private String baseEndpoint;
   private String serviceEndpoint;
   private String requestMethod;
@@ -14,16 +15,17 @@ public class IntegrationController {
   public void initRequest(String integrationConfigName, String integrationServiceName){
     IntegrationConfiguration__mdt config = getIntegrationConfig(integrationConfigName);
     IntegrationService__mdt service = getIntegrationService(integrationConfigName, integrationServiceName);
-    if(config != null){
-      setBaseEndpoint(config.BaseEndpoint__c);
+
+    if(!String.isBlank(config.NamedCredential__c)){
+      setNamedCredential(config.NamedCredential__c, service.Path__c);
+    } else {
+      setRequestEndpoint(config.BaseEndpoint__c, service.Path__c);
     }
-    if(service != null){
-      setServiceEndpoint(service.Path__c);
-    }
+
   }
 
   public void sendRequest(){
-    response = new Http().send(request);
+    this.response = new Http().send(request);
   }
 
   private IntegrationConfiguration__mdt getIntegrationConfig(String configName){
@@ -42,6 +44,10 @@ public class IntegrationController {
     return this.response;
   }
 
+  public String getRequestEndpoint(){
+    return this.baseEndpoint;
+  }
+
   public String getBaseEndpoint(){
     return this.baseEndpoint;
   }
@@ -58,6 +64,10 @@ public class IntegrationController {
     this.request = request;
   }
 
+  public void setRequestEndpoint(String baseEndpoint, String serviceEndpoint){
+    this.requestEndpoint = baseEndpoint + serviceEndpoint;
+  }
+
   public void setBaseEndpoint(String baseEndpoint){
     this.baseEndpoint = baseEndpoint;
   }
@@ -70,8 +80,8 @@ public class IntegrationController {
     this.requestMethod = requestMethod;
   }
 
-  public void setNamedCredential(){
-    
+  public void setNamedCredential(String NamedCredential, String serviceEndpoint){
+    this.requestEndpoint = ('callout:'+NamedCredential+serviceEndpoint);
   }
 
 }
