@@ -1,14 +1,16 @@
-public class IntegrationController {
+public without sharing class IntegrationController {
 
   private HttpRequest request;
   private HttpResponse response;
   private String requestEndpoint;
   private String baseEndpoint;
   private String requestMethod;
+  private Integer timeout;
 
 
   public IntegrationController() {
     this.request = new HttpRequest();
+    this.timeout = 60000;
   }
 
   public void initRequest(String integrationConfigName, String integrationServiceName){
@@ -20,9 +22,7 @@ public class IntegrationController {
     } else {
       setRequestEndpoint(config.BaseEndpoint__c, service.Path__c);
     }
-
     setRequestMethod(service.HttpMethod__c);
-
   }
 
   public void sendRequest(){
@@ -48,6 +48,10 @@ public class IntegrationController {
   }
 
   public String getRequestEndpoint(){
+    return this.requestEndpoint;
+  }
+
+  public String getBaseEndpoint(){
     return this.baseEndpoint;
   }
 
@@ -56,8 +60,9 @@ public class IntegrationController {
   }
 
   public String getResponseBody(){
-    return this.request.getBody();
+    return this.response.getBody();
   }
+
 
   public void setRequest(HttpRequest request){
     this.request = request;
@@ -67,9 +72,17 @@ public class IntegrationController {
     this.requestEndpoint = baseEndpoint + serviceEndpoint;
   }
 
+  public void setTimeout(Integer timeout){
+    this.timeout = timeout;
+  }
+
 
   public void setRequestMethod(String requestMethod){
     this.requestMethod = requestMethod;
+  }
+
+  public void setBody(String body){
+    this.request.setBody(body);
   }
 
   public void setNamedCredential(String NamedCredential, String serviceEndpoint){
@@ -78,6 +91,12 @@ public class IntegrationController {
 
   public void setUrlParams(String params){
     this.requestEndpoint = requestEndpoint+params;
+  }
+
+  public void setHeaders(Map<String, String> headers){
+    for(String header :headers.keySet()){
+      this.request.setHeader(header, headers.get(header));
+    }
   }
 
 }
