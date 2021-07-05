@@ -26,6 +26,10 @@
                 <behavior>Edit</behavior>
                 <field>Path__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>MockResponse__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
