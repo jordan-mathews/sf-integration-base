@@ -51,7 +51,7 @@ public class CalloutControllerTest {
     callout.sendRequest();
     Test.stopTest();
 
-    System.assertEquals('Test', callout.getResponse().getBody(), 'Recieved Expected Response');
+    System.assertEquals('"Test"', callout.getResponse().getBody(), 'Recieved Expected Response');
   }
 
   @isTest
@@ -65,7 +65,7 @@ public class CalloutControllerTest {
     callout.sendRequest();
     Test.stopTest();
 
-    System.assertEquals('Internal Server Error', callout.getResponse().getBody(), 'Recieved Expected Response');
+    System.assertEquals('"Internal Server Error"', callout.getResponse().getBody(), 'Recieved Expected Response');
   }
 
   @isTest

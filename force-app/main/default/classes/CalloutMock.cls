@@ -34,13 +34,14 @@ global class CalloutMock implements HttpCalloutMock {
     return resp;
   }
 
+  // TODO: add headers from mock response. add support for blob.
   public void setMock(Integer code, String status, String serviceName) {
     Map<String, Object> mock = (Map<String, Object>) JSON.deserializeUntyped(getMock(serviceName));
     Map<String, Object> mockResponse = (Map<String, Object>) mock.get(String.valueOf(code));
 
     this.code = code;
     this.status = status;
-    this.bodyAsString = String.valueOf(mockResponse.get('body'));
+    this.bodyAsString = JSON.serialize(mockResponse.get('body'));
 
     Test.setMock(HttpCalloutMock.class, this);
   }
