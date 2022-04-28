@@ -1,18 +1,65 @@
-# Salesforce DX Project: Next Steps
+# sf-integration-Base
 
-Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
+Lightweight package which aims decrease the development time of new integrations. 
 
-## How Do You Plan to Deploy Your Changes?
+## Installation
 
-Do you want to deploy a set of changes, or create a self-contained application? Choose a [development model](https://developer.salesforce.com/tools/vscode/en/user-guide/development-models).
+Clone this repository and push to your desired environment.
 
-## Configure Your Salesforce DX Project
 
-The `sfdx-project.json` file contains useful configuration information for your project. See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) in the _Salesforce DX Developer Guide_ for details about this file.
+## Configuration
+The integration can be configured by creating new records on the following Custom Metadata Objects:
+```IntegrationConfiguration__mdt```
+```IntegrationService__mdt```
 
-## Read All About It
+## Buiding HTTP Clients
+Below is a simple example of how to use the CalloutController. Provide the API names of the Custom Metadata records when initializing the request.
 
-- [Salesforce Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
-- [Salesforce CLI Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm)
+### Example of using the Callout Controller in a HTTP Cient.
+
+````
+CalloutController callout = new CalloutController();
+callout.initRequest('TEST_CONFIG', 'TEST_SERVICE');
+callout.sendRequest();
+````
+
+## Testing HTTP Clients with CalloutMock
+
+Salesforce does not allow HTTP Callouts in a Test Context. Therefor we need to use Mocks. 
+
+In your ```IntegrationService__mdt``` it is possible provide a mock response that can be used in a test class. 
+
+### Example of mock response data structure
+
+````
+{
+"200": {
+"body": <Add your expected response here>,
+"headers": null
+
+},
+"500": {
+"body": "Internal Server Error",
+"headers": null
+}
+
+}
+````
+
+### Example of testing a HTTP Client
+````
+CalloutMock mock = new CalloutMock();
+mock.setMock(200, 'OK', 'TEST_SERVICE');
+
+CalloutController callout = new CalloutController();
+
+Test.startTest();
+callout.initRequest('TEST_CONFIG', 'TEST_SERVICE');
+callout.sendRequest();
+Test.stopTest();
+````
+
+
+## Limitations
+
+- This tool currently only supports REST.
