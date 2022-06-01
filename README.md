@@ -4,7 +4,33 @@ Lightweight package which aims decrease the development time of new integrations
 
 ## Installation
 
-Clone this repository and push to your desired environment.
+1. Install [npm](https://nodejs.org/en/download/)
+1. Install [Salesforce DX CLI](https://developer.salesforce.com/tools/sfdxcli)
+    - Alternative: `npm install sfdx-cli --global`
+1. Clone this repository ([GitHub Desktop](https://desktop.github.com) is recommended for non-developers)
+1. Run `npm install` from the project root folder
+1. Install [SSDX](https://github.com/navikt/ssdx)
+    - **Non-developers may stop after this step**
+1. Install [VS Code](https://code.visualstudio.com) (recommended)
+    - Install [Salesforce Extension Pack](https://marketplace.visualstudio.com/items?itemName=salesforce.salesforcedx-vscode)
+    - **Install recommended plugins!** A notification should appear when opening VS Code. It will prompt you to install recommended plugins.
+1. Install [AdoptOpenJDK](https://adoptopenjdk.net) (only version 8 or 11)
+1. Open VS Code settings and search for `salesforcedx-vscode-apex`
+1. Under `Java Home`, add the following:
+    - macOS: `/Library/Java/JavaVirtualMachines/adoptopenjdk-[VERSION_NUMBER].jdk/Contents/Home`
+    - Windows: `C:\\Program Files\\AdoptOpenJDK\\jdk-[VERSION_NUMBER]-hotspot`
+
+## Build
+
+To build the project locally follow these steps:
+
+1. If you have not authenticated to a DevHub run `sfdx auth:web:login -d -a production` and the log in.
+2. Create scratch org and push project source.
+
+```
+npm install
+npm run mac:build
+```
 
 
 ## Configuration
